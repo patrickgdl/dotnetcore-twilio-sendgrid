@@ -12,18 +12,20 @@ using Twilio.Types;
 
 namespace TextToEmail.Controllers
 {
-   [Route("api/[controller]")]
-   [ApiController]
-   public class TextController : TwilioController
-   {
-       [HttpPost]
-       public async Task<IActionResult> Post()
-       {
-           var from = Request.Form["From"];
-           var body = Request.Form["Body"];
-           var testContent = $@"<Response><Message>your number:{from} and your message: '{body}'</Message></Response>";
-           return Content(testContent, "text/xml");
-       }
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TextController : TwilioController
+    {
+        [HttpPost]
+        public async Task<IActionResult> Post()
+        {
+            var from = Request.Form["From"];
+            var body = Request.Form["Body"];
+            var emailer = new Emailer();
+            var message = await emailer.Send(from, body);
+            var response = $"<Response><Message>{message}</Message></Response>";
+            return Content(response, "text/xml");
 
-   }
+        }
+    }
 }
